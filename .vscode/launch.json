@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Debug todo",
+            "program": "${workspaceFolder:todo}/.build/debug/todo",
+            "args": ["list"],
+            "cwd": "${workspaceFolder:todo}",
+            "preLaunchTask": "swift: Build Debug todo"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "name": "Release todo",
+            "program": "${workspaceFolder:todo}/.build/release/todo",
+            "args": [],
+            "cwd": "${workspaceFolder:todo}",
+            "preLaunchTask": "swift: Build Release todo"
+        }
+    ]
+}
