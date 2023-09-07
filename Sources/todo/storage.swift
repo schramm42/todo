@@ -1,5 +1,10 @@
 import Foundation
-import Stores
+
+enum TaskStatus: String, Codable {
+    case todo
+    case inprogress
+    case done
+}
 
 struct Task: Codable {
     let id: Int
@@ -7,7 +12,7 @@ struct Task: Codable {
     let description: String?
     let dateCreate: Date?
     let dateModified: Date?
-    let status: String
+    let status: TaskStatus
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -26,39 +31,74 @@ enum TaskError: Error {
 }
 
 final class TaskStore {
-    private let store = MultiFileSystemStore<Task>(path: "tasks")
+    private var tasks = [Int: Task]()
+    private let encoder = JSONEncoder()
+    private let decoder: JSONDecoder = JSONDecoder()
 
     public static let shared: TaskStore = TaskStore()
 
+    private let savePath = FileManager.default.currentDirectoryPath.appending("/data.json")
+
     init() {
-        // self.store = SingleFileSystemStore<Task>(path: "tasks")
+        self.encoder.outputFormatting = .prettyPrinted
+        self.encoder.dateEncodingStrategy = .iso8601
+        self.decoder.dateDecodingStrategy = .iso8601
     }
 
-    public func addTask(name: String) throws {
-        let maxId = self.store.allObjects().map({ $0.id }).max() ?? 0
+    public func addTask(name: String, description: String? = nil) throws -> Task {
+        let keys = Array(self.tasks.keys)
+        let maxId = keys.max() ?? 0
 
         let now = Date()
+        let id = maxId + 1
         let task = Task(
-            id: maxId + 1,
+            id: id,
             name: name,
             description: "",
             dateCreate: now,
             dateModified: now,
-            status: "todo"
+            status: TaskStatus.todo
         )
+        self.tasks[id] = task
 
-        try self.store.save(task)
+        //try self.save()
+
+        return task
+    }
+
+    public func load() throws -> TaskStore {
+        let fileData = FileManager.default.contents(atPath: self.savePath)
+        self.tasks = try self.decoder.decode([Int: Task].self, from: fileData!)
+
+        return self
+    }
+
+    public func save() throws -> TaskStore {
+        let data = try self.encoder.encode(self.tasks)
+        FileManager.default.createFile(atPath: self.savePath, contents: data)
+
+        return self
     }
 
     public func getTasks() -> [Task] {
-        return self.store.allObjects()
+        return Array(self.tasks.values)
+    }
+
+    public func getTask(id: Int) throws -> Task {
+        let keys = Array(self.tasks.keys)
+        if (!keys.contains(id)) {
+            throw TaskError.notExists
+        }
+
+        return self.tasks[id]!
     }
 
     public func taskExists(id: Int) -> Bool {
-        return self.store.containsObject(withId: id)
+        let keys = Array(self.tasks.keys)
+        return keys.contains(id)
     }
 
     public func deleteTask(id: Int) throws {
-        try self.store.remove(withId: id)
+        self.tasks.removeValue(forKey: id)
     }
 }

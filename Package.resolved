@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "Stores",
-        "repositoryURL": "https://github.com/omaralbeik/Stores.git",
-        "state": {
-          "branch": null,
-          "revision": "638291752db347e40ea4932be424585d47447d32",
-          "version": "1.0.0"
-        }
-      },
-      {
         "package": "SwiftCLI",
         "repositoryURL": "https://github.com/jakeheis/SwiftCLI",
         "state": {

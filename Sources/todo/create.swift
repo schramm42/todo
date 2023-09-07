@@ -8,8 +8,6 @@ class CreateCommand: Command {
 
     func execute() throws {
         do {
-            print("\(name)".bold().red())
-
             var nameOfTask: String
             if (taskName == nil) {
                 nameOfTask = Input.readLine(
@@ -19,7 +17,13 @@ class CreateCommand: Command {
                 nameOfTask = taskName!
             }
 
-            try TaskStore.shared.addTask(name: nameOfTask)
+            let task = try TaskStore.shared
+                .load()
+                .addTask(name: nameOfTask)
+                
+            _ = try TaskStore.shared.save()
+
+            try Display.printTask(task: task)
         } catch {
             print(error)
         }

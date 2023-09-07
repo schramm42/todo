@@ -16,7 +16,8 @@ let package = Package(
             from: "1.0.0"
         ),
         // .package(url: "https://github.com/Swiftline/Swiftline.git", majorVersion: 0, minor: 3),
-        .package(url: "https://github.com/omaralbeik/Stores.git", from: "1.0.0"),
+        // .package(url: "https://github.com/omaralbeik/Stores.git", from: "1.0.0"),
+        // .package(url: "https://github.com/saoudrizwan/Disk.git", from: "0.6.4"),
     ],
     targets: [
         .target(
@@ -30,7 +31,8 @@ let package = Package(
                 "Table",
                 // "Swiftline",
                 // "PersistenceKit",
-                "Stores",
+                // "Stores",
+                // "Disk",
             ]),
     ]
 )

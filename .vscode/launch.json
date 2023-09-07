@@ -8,7 +8,7 @@
             ],
             "name": "Debug todo",
             "program": "${workspaceFolder:todo}/.build/debug/todo",
-            "args": ["list"],
+            "args": ["get", "10"],
             "cwd": "${workspaceFolder:todo}",
             "preLaunchTask": "swift: Build Debug todo"
         },
