@@ -23,7 +23,7 @@ class CreateCommand: Command {
                 
             _ = try TaskStore.shared.save()
 
-            try Display.printTask(task: task)
+            Display.printTask(task: task)
         } catch {
             print(error)
         }

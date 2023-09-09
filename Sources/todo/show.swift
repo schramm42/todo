@@ -20,7 +20,7 @@ class ShowCommand: Command {
                 .load()
                 .getTask(id: idToShow)
                 
-            try Display.printTask(task: task)
+            Display.printTask(task: task)
         } catch {
             print(error)
         }

@@ -1,6 +1,7 @@
 import Foundation
+import SwiftCLI
 
-enum TaskStatus: String, Codable {
+enum TaskStatus: String, Codable, ConvertibleFromString, CaseIterable {
     case todo
     case inprogress
     case done
@@ -8,11 +9,11 @@ enum TaskStatus: String, Codable {
 
 struct Task: Codable {
     let id: Int
-    let name: String
-    let description: String?
+    var name: String
+    var description: String?
     let dateCreate: Date?
-    let dateModified: Date?
-    let status: TaskStatus
+    var dateModified: Date?
+    var status: TaskStatus
 
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -32,12 +33,12 @@ enum TaskError: Error {
 
 final class TaskStore {
     private var tasks = [Int: Task]()
-    private let encoder = JSONEncoder()
+    private let encoder: JSONEncoder = JSONEncoder()
     private let decoder: JSONDecoder = JSONDecoder()
 
     public static let shared: TaskStore = TaskStore()
 
-    private let savePath = FileManager.default.currentDirectoryPath.appending("/data.json")
+    private let savePath: String = FileManager.default.currentDirectoryPath.appending("/data.json")
 
     init() {
         self.encoder.outputFormatting = .prettyPrinted
@@ -85,12 +86,23 @@ final class TaskStore {
     }
 
     public func getTask(id: Int) throws -> Task {
-        let keys = Array(self.tasks.keys)
-        if (!keys.contains(id)) {
+        if (!self.taskExists(id: id)) {
             throw TaskError.notExists
         }
 
         return self.tasks[id]!
+    }
+
+    public func setTask(_ id: Int, _ task: inout Task) throws -> TaskStore {
+        if (!self.taskExists(id: id)) {
+            throw TaskError.notExists
+        }
+
+        task.dateModified = Date()
+
+        self.tasks[id] = task
+
+        return self
     }
 
     public func taskExists(id: Int) -> Bool {

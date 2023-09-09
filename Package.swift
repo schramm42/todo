@@ -8,7 +8,7 @@ let package = Package(
         // .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.1"),
         .package(url: "https://github.com/getGuaka/Prompt.git", from: "0.0.0"),
         .package(url: "https://github.com/jakeheis/SwiftCLI", from: "6.0.0"),
-        // .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.5.0"),
+        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.5.0"),
         .package(url: "https://github.com/mtynior/ColorizeSwift.git", from: "1.5.0"),
         // .package(url: "https://github.com/Teknasyon-Teknoloji/PersistenceKit.git", from: "1.4.0"),
         .package(
@@ -26,7 +26,7 @@ let package = Package(
                 "SwiftCLI", 
                 // "SQLite", 
                 "Prompt", 
-                // "SwiftyTextTable",
+                "SwiftyTextTable",
                 "ColorizeSwift",
                 "Table",
                 // "Swiftline",

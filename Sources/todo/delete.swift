@@ -1,10 +1,14 @@
-import SwiftCLI
 import ColorizeSwift
+import SwiftCLI
 
 class DeleteCommand: Command {
     let name = "delete"
 
-    @Flag("-y", "--assume-yes", description: "Interaktive Fragen werden automatisch mit 'YES'/'JA' beantwortet")
+    @Flag(
+        "-y",
+        "--assume-yes",
+        description: "Interaktive Fragen werden automatisch mit 'YES'/'JA' beantwortet"
+    )
     var assumeYes: Bool
 
     @Param var id: Int?
@@ -13,26 +17,29 @@ class DeleteCommand: Command {
         do {
 
             var idToDelete: Int
-            if (id == nil) {
+            if id == nil {
                 idToDelete = Input.readInt(
                     prompt: "Id of the task to delete?:"
                 )
-            } else {
+            }
+            else {
                 idToDelete = id!
             }
 
             // print("IdToDelete: \(idToDelete)")
 
-            if (!TaskStore.shared.taskExists(id: idToDelete)) {
+            if !TaskStore.shared.taskExists(id: idToDelete) {
                 throw TaskError.notExists
             }
 
             try TaskStore.shared.deleteTask(id: idToDelete)
             print("Task #\(idToDelete) is deleted")
-            
-        } catch TaskError.notExists {
+
+        }
+        catch TaskError.notExists {
             print("Task doesn't exists")
-        } catch {
+        }
+        catch {
             print(error)
         }
     }
