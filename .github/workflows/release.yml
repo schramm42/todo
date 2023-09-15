@@ -7,8 +7,11 @@ on:
   
 jobs:
   build:
-    name: Create Release
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     steps:
@@ -16,26 +19,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get tags
+        id: tags
+        uses: schramm42/github-action-get-tags@v1
+
       - name: Build
         run: swift build -v -c release -Xswiftc -cross-module-optimization
 
       - uses: actions/upload-artifact@v3
         with:
-          name: todo
+          name: todo-${{ matrix.os }}-${{ steps.tags.outputs.currentTag }}
           path: .build/release/todo
 
-      - name: Get tags
-        id: tags
-        uses: schramm42/github-action-get-tags@v1
+
           
-      - name: Create Release
-        id: create_release
-        uses: ncipollo/release-action@v1
-        with:
-            artifacts: .build/release/todo
-            body: |
-                **Full Changelog**: https://github.com/schramm42/todo/compare/${{ steps.tags.outputs.previousTag }}...${{ steps.tags.outputs.currentTag }}
-            draft: false
-            prerelease: false
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Create Release
+      #   id: create_release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #       artifacts: .build/release/todo
+      #       body: |
+      #           **Full Changelog**: https://github.com/schramm42/todo/compare/${{ steps.tags.outputs.previousTag }}...${{ steps.tags.outputs.currentTag }}
+      #       draft: false
+      #       prerelease: false
+      #   env: 
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
