@@ -27,9 +27,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest] # [ubuntu-latest, windows-latest, macos-latest] 
-        include:
-          - os: windows-latest
-            setup: bla
+        # include:
+        #   - os: windows-latest
+        #     setup: bla
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     permissions:
