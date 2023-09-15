@@ -9,15 +9,18 @@ jobs:
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.set-version.outputs.VERSION }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set Version
+        id: set-version
         run: |
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           echo "VERSION=${VERSION}"
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
 
   build:
     needs: prepare
@@ -41,16 +44,17 @@ jobs:
         uses: schramm42/github-action-get-tags@v1
 
       - name: Build
-        if: ${{ matrix.setup }}
-        uses: compnerd/gha-setup-swift@main
-        with:
-          branch: swift-5.8.1-release
-          tag: 5.8.1-RELEASE
+        # if: ${{ matrix.setup }}
+        # uses: compnerd/gha-setup-swift@main
+        # with:
+        #   branch: swift-5.8.1-release
+        #   tag: 5.8.1-RELEASE
+        uses: swift-actions/setup-swift@v1
       - run: swift build -v -c release -Xswiftc -cross-module-optimization
 
       - uses: actions/upload-artifact@v3
         with:
-          name: todo-${{ matrix.os }}-${{ env.VERSION }}
+          name: todo-${{ matrix.os }}-${{ needs.prepare.outputs.VERSION }}.zip
           path: .build/release/todo
 
 
