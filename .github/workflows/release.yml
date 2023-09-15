@@ -41,7 +41,10 @@ jobs:
 
       - name: Build
         if: ${{ matrix.setup }}
-        run: echo "SETUP"
+        uses: compnerd/gha-setup-swift@main
+        with:
+          branch: swift-5.5-release
+          tag: 5.5-RELEASE
       - run: swift build -v -c release -Xswiftc -cross-module-optimization
 
       - uses: actions/upload-artifact@v3
