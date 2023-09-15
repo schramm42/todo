@@ -6,10 +6,26 @@ on:
       - 'v*'
   
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Version
+        run: |
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          echo "VERSION=${VERSION}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
   build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: windows-latest
+            setup: bla
     name: Build ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     permissions:
@@ -24,11 +40,13 @@ jobs:
         uses: schramm42/github-action-get-tags@v1
 
       - name: Build
-        run: swift build -v -c release -Xswiftc -cross-module-optimization
+        if: ${{ matrix.setup }}
+        run: echo "SETUP"
+      - run: swift build -v -c release -Xswiftc -cross-module-optimization
 
       - uses: actions/upload-artifact@v3
         with:
-          name: todo-${{ matrix.os }}-${{ steps.tags.outputs.currentTag }}
+          name: todo-${{ matrix.os }}-${{ env.VERSION }}
           path: .build/release/todo
 
 
