@@ -16,6 +16,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Build
+        run: swift build -v -c release -Xswiftc -cross-module-optimization
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: todo
+          path: .build/release/todo
+
       - name: Get tags
         id: tags
         uses: schramm42/github-action-get-tags@v1
@@ -31,11 +39,3 @@ jobs:
             prerelease: false
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build
-        run: swift build -v -c release -Xswiftc -cross-module-optimization
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: todo
-          path: .build/release/todo
