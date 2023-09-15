@@ -20,6 +20,7 @@ jobs:
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
   build:
+    needs: prepare
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -43,8 +44,8 @@ jobs:
         if: ${{ matrix.setup }}
         uses: compnerd/gha-setup-swift@main
         with:
-          branch: swift-5.5-release
-          tag: 5.5-RELEASE
+          branch: swift-5.8.1-release
+          tag: 5.8.1-RELEASE
       - run: swift build -v -c release -Xswiftc -cross-module-optimization
 
       - uses: actions/upload-artifact@v3
