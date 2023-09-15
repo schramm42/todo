@@ -32,7 +32,7 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "todo"
+            artifacts: .build/release/todo
             body: |
                 **Full Changelog**: https://github.com/schramm42/todo/compare/${{ steps.tags.outputs.previousTag }}...${{ steps.tags.outputs.currentTag }}
             draft: false
